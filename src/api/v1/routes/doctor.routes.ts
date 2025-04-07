@@ -1,25 +1,12 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
+import * as controller from '../controllers/doctor.controller';
 
 const router = Router();
 
-router.get('/', (_req: Request, res: Response) => {
-  res.send('Get all doctors');
-});
-
-router.get('/:id', (_req: Request, res: Response) => {
-  res.send('Get doctor by ID');
-});
-
-router.post('/', (_req: Request, res: Response) => {
-  res.send('Create doctor');
-});
-
-router.put('/:id', (_req: Request, res: Response) => {
-  res.send('Update doctor');
-});
-
-router.delete('/:id', (_req: Request, res: Response) => {
-  res.send('Delete doctor');
-});
+router.get('/', controller.getAllDoctors);
+router.get('/:id', controller.getDoctorById);
+router.post('/', controller.createDoctor);
+router.put('/:id', controller.updateDoctor);
+router.delete('/:id', controller.deleteDoctor);
 
 export default router;
