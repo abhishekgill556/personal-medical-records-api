@@ -1,7 +1,7 @@
-import { firestore } from '../../../../config/firebase';
+import { db } from '../../../../config/firebase';
 import { Doctor } from '../types/doctor.types';
 
-const collection = firestore.collection('doctors');
+const collection = db.collection('doctors');
 
 export const getAllDoctors = async (): Promise<Doctor[]> => {
   const snapshot = await collection.get();
