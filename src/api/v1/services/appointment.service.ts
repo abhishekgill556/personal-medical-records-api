@@ -1,7 +1,7 @@
-import { firestore } from '../../../../config/firebase';
+import { db } from '../../../../config/firebase';
 import { Appointment } from '../types/appointment.types';
 
-const collection = firestore.collection('appointments');
+const collection = db.collection('appointments');
 
 export const getAllAppointments = async (): Promise<Appointment[]> => {
   const snapshot = await collection.get();

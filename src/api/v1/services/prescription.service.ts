@@ -1,7 +1,7 @@
-import { firestore } from '../../../../config/firebase';
+import { db } from '../../../../config/firebase';
 import { Prescription } from '../types/prescription.types';
 
-const collection = firestore.collection('prescriptions');
+const collection = db.collection('prescriptions');
 
 export const getPrescriptionsByPatientId = async (patientId: string): Promise<Prescription[]> => {
   const snapshot = await collection.where('patientId', '==', patientId).get();

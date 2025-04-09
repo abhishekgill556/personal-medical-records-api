@@ -1,5 +1,5 @@
 jest.mock('../config/firebase', () => ({
-    firestore: {
+    db: {
       collection: () => ({
         get: () => ({
           docs: [

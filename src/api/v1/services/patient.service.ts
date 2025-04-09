@@ -1,8 +1,8 @@
 // src/api/v1/services/patient.service.ts
-import { firestore } from '../../../../config/firebase';
+import { db } from '../../../../config/firebase';
 import { Patient } from '../types/patient.types';
 
-const collection = firestore.collection('patients');
+const collection = db.collection('patients');
 
 export const getAllPatients = async (): Promise<Patient[]> => {
   const snapshot = await collection.get();
