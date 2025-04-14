@@ -157,6 +157,20 @@ npm run test
 
 ---
 
+### Rate Limiting
+
+This API uses `express-rate-limit` middleware to prevent abuse:
+
+- **Limit**: 100 requests per 15 minutes per IP
+- **Response**: Returns HTTP `429` status with a message if limit is exceeded
+
+Example error response:
+```json
+{
+  "message": "Too many requests from this IP, please try again after 15 minutes"
+}
+```
+
 ##  Author
 
 **Abhishek Gill**  
