@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from '../config/swagger';
+import rateLimit from 'express-rate-limit';
 
 import dotenv from 'dotenv';
 
@@ -25,6 +26,16 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json());
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,
+  message: 'Too many requests from this IP, please try again after 15 minutes',
+});
+
+app.use('/api/', apiLimiter);
+
+
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

@@ -157,6 +157,188 @@ npm run test
 
 ---
 
+### Rate Limiting
+
+This API uses `express-rate-limit` middleware to prevent abuse:
+
+- **Limit**: 100 requests per 15 minutes per IP
+- **Response**: Returns HTTP `429` status with a message if limit is exceeded
+
+Example error response:
+```json
+{
+  "message": "Too many requests from this IP, please try again after 15 minutes"
+}
+```
+
 ##  Author
 
 **Abhishek Gill**  
+
+
+
+## SWagger API usage
+
+# Personal Medical Records API
+
+This is a back-end API built with Node.js, TypeScript, and Firebase. It supports patient management, doctor profiles, appointments, and prescriptions. This README shows how to use the main routes.
+
+---
+
+## Appointments API
+
+### Base URL
+`http://localhost:3000/api/v1/appointments`
+
+### GET `/appointments`
+Returns a list of all appointments.
+
+#### Response
+```json
+[
+  {
+    "id": "a001",
+    "patientId": "p001",
+    "doctorId": "d001",
+    "date": "2025-04-15T10:00:00Z",
+    "reason": "Routine Checkup",
+    "status": "Booked"
+  }
+]
+```
+
+### GET `/appointments/{id}`
+Returns one appointment by ID.
+
+#### Example
+`GET /appointments/a001`
+
+#### Response
+```json
+{
+  "id": "a001",
+  "patientId": "p001",
+  "doctorId": "d001",
+  "date": "2025-04-15T10:00:00Z",
+  "reason": "Routine Checkup",
+  "status": "Booked"
+}
+```
+
+### POST `/appointments`
+Creates a new appointment.
+
+#### Request Body
+```json
+{
+  "patientId": "p001",
+  "doctorId": "d001",
+  "date": "2025-04-15T10:00:00Z",
+  "reason": "Routine Checkup"
+}
+```
+
+### PUT `/appointments/{id}`
+Updates an appointment.
+
+#### Request Body
+```json
+{
+  "patientId": "p001",
+  "doctorId": "d001",
+  "date": "2025-04-18T11:00:00Z",
+  "reason": "Follow-up Checkup",
+  "status": "Booked"
+}
+```
+
+### DELETE `/appointments/{id}`
+Deletes an appointment.
+
+---
+
+## Doctors API
+
+### Base URL
+`http://localhost:3000/api/v1/doctors`
+
+### GET `/doctors`
+Returns all doctors.
+
+### GET `/doctors/{id}`
+Returns one doctor.
+
+### POST `/doctors`
+```json
+{
+  "name": "Dr. Kaur",
+  "specialization": "Neurology",
+  "email": "kaur@example.com"
+}
+```
+
+### PUT `/doctors/{id}`
+```json
+{
+  "name": "Dr. Kaur Updated",
+  "specialization": "Neurology",
+  "email": "kaur.updated@example.com"
+}
+```
+
+### DELETE `/doctors/{id}`
+Deletes a doctor.
+
+---
+
+## Patients API
+
+### Base URL
+`http://localhost:3000/api/v1/patients`
+
+### GET `/patients`
+Returns all patients.
+
+### GET `/patients/{id}`
+Returns one patient.
+
+### POST `/patients`
+```json
+{
+  "name": "Jane Smith",
+  "age": 30,
+  "medicalHistory": ["Asthma"]
+}
+```
+
+### PUT `/patients/{id}`
+```json
+{
+  "name": "Jane Smith Updated",
+  "age": 31,
+  "medicalHistory": ["Asthma", "Migraine"]
+}
+```
+
+### DELETE `/patients/{id}`
+Deletes a patient.
+
+---
+
+## Prescriptions API
+
+### Base URL
+`http://localhost:3000/api/v1/prescriptions`
+
+### GET `/prescriptions/{patientId}`
+Returns prescriptions for one patient.
+
+### POST `/prescriptions`
+```json
+{
+  "doctorId": "d001",
+  "patientId": "p001",
+  "medicines": ["Paracetamol", "Ibuprofen"],
+  "instructions": "Take after meals, twice a day"
+}
+```
