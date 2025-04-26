@@ -1,8 +1,17 @@
 import { Request, Response } from 'express';
 import * as doctorService from '../services/doctor.service';
 
-export const getAllDoctors = async (_req: Request, res: Response): Promise<void> => {
-  const doctors = await doctorService.getAllDoctors();
+// getAllDoctors updated to use query params
+export const getAllDoctors = async (req: Request, res: Response): Promise<void> => {
+  const { specialization, sortBy, sortOrder } = req.query;
+
+  const options = {
+    specialization: specialization as string | undefined,
+    sortBy: sortBy as 'name' | 'specialization' | undefined,
+    sortOrder: sortOrder as 'asc' | 'desc' | undefined,
+  };
+
+  const doctors = await doctorService.getAllDoctors(options);
   res.status(200).json(doctors);
 };
 

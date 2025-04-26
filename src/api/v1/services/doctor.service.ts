@@ -3,8 +3,25 @@ import { Doctor } from '../types/doctor.types';
 
 const collection = db.collection('doctors');
 
-export const getAllDoctors = async (): Promise<Doctor[]> => {
-  const snapshot = await collection.get();
+interface DoctorQueryOptions {
+  specialization?: string;
+  sortBy?: 'name' | 'specialization';
+  sortOrder?: 'asc' | 'desc';
+}
+
+// getAllDoctors with filtering + sorting
+export const getAllDoctors = async (options: DoctorQueryOptions = {}): Promise<Doctor[]> => {
+  let query: FirebaseFirestore.Query = collection;
+
+  if (options.specialization) {
+    query = query.where('specialization', '==', options.specialization);
+  }
+
+  if (options.sortBy) {
+    query = query.orderBy(options.sortBy, options.sortOrder || 'asc');
+  }
+
+  const snapshot = await query.get();
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Doctor));
 };
 
