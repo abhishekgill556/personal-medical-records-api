@@ -10,8 +10,7 @@ export const getDoctorById = async (req: Request, res: Response) => {
   const { id } = req.params;
   const doctor = await doctorService.getDoctorById(id);
   if (!doctor) {
-    res.status(404).json({ message: 'Doctor not found' });
-    return;
+    return res.status(404).json({ message: 'Doctor not found' });
   }
   res.status(200).json(doctor);
 };
@@ -22,11 +21,25 @@ export const createDoctor = async (req: Request, res: Response) => {
 };
 
 export const updateDoctor = async (req: Request, res: Response) => {
-  const updated = await doctorService.updateDoctor(req.params.id, req.body);
+  const { id } = req.params;
+
+  const doctor = await doctorService.getDoctorById(id);
+  if (!doctor) {
+    return res.status(404).json({ message: 'Doctor not found' });
+  }
+
+  const updated = await doctorService.updateDoctor(id, req.body);
   res.status(200).json(updated);
 };
 
 export const deleteDoctor = async (req: Request, res: Response) => {
-  await doctorService.deleteDoctor(req.params.id);
+  const { id } = req.params;
+
+  const doctor = await doctorService.getDoctorById(id);
+  if (!doctor) {
+    return res.status(404).json({ message: 'Doctor not found' });
+  }
+
+  await doctorService.deleteDoctor(id);
   res.status(204).send();
 };
