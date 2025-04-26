@@ -1,8 +1,18 @@
 import { Request, Response } from 'express';
 import * as appointmentService from '../services/appointment.service';
 
-export const getAllAppointments = async (_req: Request, res: Response): Promise<void> => {
-  const appointments = await appointmentService.getAllAppointments();
+export const getAllAppointments = async (req: Request, res: Response): Promise<void> => {
+  const { status, doctorId, patientId, sortBy, sortOrder } = req.query;
+
+  const options = {
+    status: status as 'Booked' | 'Completed' | 'Cancelled' | undefined,
+    doctorId: doctorId as string | undefined,
+    patientId: patientId as string | undefined,
+    sortBy: sortBy as 'date' | undefined,
+    sortOrder: sortOrder as 'asc' | 'desc' | undefined,
+  };
+
+  const appointments = await appointmentService.getAllAppointments(options);
   res.status(200).json(appointments);
 };
 

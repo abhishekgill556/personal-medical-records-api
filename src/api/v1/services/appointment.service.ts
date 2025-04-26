@@ -3,8 +3,34 @@ import { Appointment } from '../types/appointment.types';
 
 const collection = db.collection('appointments');
 
-export const getAllAppointments = async (): Promise<Appointment[]> => {
-  const snapshot = await collection.get();
+interface AppointmentQueryOptions {
+  status?: 'Booked' | 'Completed' | 'Cancelled';
+  doctorId?: string;
+  patientId?: string;
+  sortBy?: 'date';
+  sortOrder?: 'asc' | 'desc';
+}
+
+export const getAllAppointments = async (options: AppointmentQueryOptions = {}): Promise<Appointment[]> => {
+  let query: FirebaseFirestore.Query = collection;
+
+  if (options.status) {
+    query = query.where('status', '==', options.status);
+  }
+
+  if (options.doctorId) {
+    query = query.where('doctorId', '==', options.doctorId);
+  }
+
+  if (options.patientId) {
+    query = query.where('patientId', '==', options.patientId);
+  }
+
+  if (options.sortBy) {
+    query = query.orderBy(options.sortBy, options.sortOrder || 'asc');
+  }
+
+  const snapshot = await query.get();
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Appointment));
 };
 
@@ -18,7 +44,7 @@ export const createAppointment = async (data: Appointment): Promise<Appointment>
   const now = new Date();
   const docRef = await collection.add({
     ...data,
-    status: 'Booked',
+    status: 'Booked', // default if not provided
     createdAt: now,
     updatedAt: now,
   });
