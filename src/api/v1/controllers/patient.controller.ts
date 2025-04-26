@@ -1,8 +1,16 @@
 import { Request, Response } from 'express';
 import * as patientService from '../services/patient.service';
 
-export const getAllPatients = async (_req: Request, res: Response): Promise<void> => {
-  const patients = await patientService.getAllPatients();
+export const getAllPatients = async (req: Request, res: Response): Promise<void> => {
+  const { age, sortBy, sortOrder } = req.query;
+
+  const options = {
+    age: age ? parseInt(age as string, 10) : undefined,
+    sortBy: sortBy as 'name' | 'age' | undefined,
+    sortOrder: sortOrder as 'asc' | 'desc' | undefined,
+  };
+
+  const patients = await patientService.getAllPatients(options);
   res.status(200).json(patients);
 };
 
