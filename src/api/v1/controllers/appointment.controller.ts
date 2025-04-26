@@ -1,8 +1,18 @@
 import { Request, Response } from 'express';
 import * as appointmentService from '../services/appointment.service';
 
-export const getAllAppointments = async (_req: Request, res: Response): Promise<void> => {
-  const appointments = await appointmentService.getAllAppointments();
+export const getAllAppointments = async (req: Request, res: Response): Promise<void> => {
+  const { status, doctorId, patientId, sortBy, sortOrder } = req.query;
+
+  const options = {
+    status: status as 'Booked' | 'Completed' | 'Cancelled' | undefined,
+    doctorId: doctorId as string | undefined,
+    patientId: patientId as string | undefined,
+    sortBy: sortBy as 'date' | undefined,
+    sortOrder: sortOrder as 'asc' | 'desc' | undefined,
+  };
+
+  const appointments = await appointmentService.getAllAppointments(options);
   res.status(200).json(appointments);
 };
 
@@ -22,11 +32,23 @@ export const createAppointment = async (req: Request, res: Response): Promise<vo
 };
 
 export const updateAppointment = async (req: Request, res: Response): Promise<void> => {
-  const updatedAppointment = await appointmentService.updateAppointment(req.params.id, req.body);
+  const { id } = req.params;
+  const appointment = await appointmentService.getAppointmentById(id);
+  if (!appointment) {
+    res.status(404).json({ message: 'Appointment not found' });
+    return;
+  }
+  const updatedAppointment = await appointmentService.updateAppointment(id, req.body);
   res.status(200).json(updatedAppointment);
 };
 
 export const deleteAppointment = async (req: Request, res: Response): Promise<void> => {
-  await appointmentService.deleteAppointment(req.params.id);
+  const { id } = req.params;
+  const appointment = await appointmentService.getAppointmentById(id);
+  if (!appointment) {
+    res.status(404).json({ message: 'Appointment not found' });
+    return;
+  }
+  await appointmentService.deleteAppointment(id);
   res.status(204).send();
 };

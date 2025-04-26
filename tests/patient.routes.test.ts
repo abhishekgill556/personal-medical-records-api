@@ -1,43 +1,49 @@
 jest.mock('../config/firebase', () => ({
-    db: {
-      collection: () => ({
+  db: {
+    collection: () => ({
+      get: () => ({
+        docs: [
+          {
+            id: 'p001',
+            data: () => ({
+              name: 'John Doe',
+              age: 45,
+              medicalHistory: ['Diabetes']
+            })
+          }
+        ]
+      }),
+      add: () => ({
         get: () => ({
-          docs: [
-            {
-              id: 'p001',
-              data: () => ({
-                name: 'John Doe',
-                age: 45,
-                medicalHistory: ['Diabetes']
-              })
-            }
-          ]
-        }),
-        add: () => ({
-          get: () => ({
-            id: 'p002',
-            data: () => ({
-              name: 'Jane Smith',
-              age: 30,
-              medicalHistory: ['Asthma']
-            })
-          })
-        }),
-        doc: () => ({
-          update: () => Promise.resolve(),
-          delete: () => Promise.resolve(),
-          get: () => ({
-            id: 'p002',
-            data: () => ({
-              name: 'Jane Smith Updated',
-              age: 31,
-              medicalHistory: ['Asthma', 'Migraine']
-            })
+          id: 'p002',
+          data: () => ({
+            name: 'Jane Smith',
+            age: 30,
+            medicalHistory: ['Asthma']
           })
         })
+      }),
+      doc: (id: string) => ({
+        get: () =>
+          Promise.resolve({
+            id,
+            exists: id === 'p002',
+            data: () =>
+              id === 'p002'
+                ? {
+                    name: 'Jane Smith Updated',
+                    age: 31,
+                    medicalHistory: ['Asthma', 'Migraine']
+                  }
+                : null
+          }),
+        update: () => Promise.resolve(),
+        delete: () => Promise.resolve()
       })
-    }
-  }));
+    })
+  }
+}));
+
   
   import request from 'supertest';
   import app from '../src/app';

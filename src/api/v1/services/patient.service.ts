@@ -1,11 +1,29 @@
-// src/api/v1/services/patient.service.ts
 import { db } from '../../../../config/firebase';
 import { Patient } from '../types/patient.types';
 
 const collection = db.collection('patients');
 
-export const getAllPatients = async (): Promise<Patient[]> => {
-  const snapshot = await collection.get();
+interface QueryOptions {
+  age?: number;
+  sortBy?: 'name' | 'age';
+  sortOrder?: 'asc' | 'desc';
+}
+
+// Updated getAllPatients with filtering + sorting
+export const getAllPatients = async (options: QueryOptions = {}): Promise<Patient[]> => {
+  let query: FirebaseFirestore.Query = collection;
+
+  // Filter by age if provided
+  if (options.age !== undefined) {
+    query = query.where('age', '==', options.age);
+  }
+
+  // Sorting if provided
+  if (options.sortBy) {
+    query = query.orderBy(options.sortBy, options.sortOrder || 'asc');
+  }
+
+  const snapshot = await query.get();
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Patient));
 };
 
